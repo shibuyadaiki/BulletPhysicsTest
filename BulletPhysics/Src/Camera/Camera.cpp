@@ -29,7 +29,7 @@ void Camera::SetCamera(Vector3 cameraPos, Vector3 cameraView,Vector3 cameraUp){
 	mCameraParam.Eye = cameraPos;//* Time::DeltaTime;
 	mCameraParam.Target = cameraView;
 	mCameraParam.Up = cameraUp;//* Time::DeltaTime;
-	D3DXMatrixPerspectiveFovLH(&matProj, 3.1415926f / 4.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
+	D3DXMatrixPerspectiveFovLH(&matProj, 3.1415926f / 4.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
 	// ÉrÉÖÅ[çsóÒ
 	D3DXMatrixLookAtLH(&matView,
 		&RConvert(&mCameraParam.Eye),

@@ -71,16 +71,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>DirectX\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>DirectX\Lib\DebugAndRelease;DirectX\Lib\DebugLib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\bulletSln\include;DirectX\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\bulletSln\lib\Debug;DirectX\Lib\DebugAndRelease;DirectX\Lib\DebugLib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>DirectX\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>DirectX\Lib\DebugAndRelease;DirectX\Lib\ReleaseLib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\bulletSln\include;DirectX\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\bulletSln\lib\Release;DirectX\Lib\DebugAndRelease;DirectX\Lib\ReleaseLib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="Src\Actor\Actor.cpp" />
     <ClCompile Include="Src\Actor\ActorManager.cpp" />
+    <ClCompile Include="Src\Actor\Enemy.cpp" />
     <ClCompile Include="Src\Actor\Player.cpp" />
     <ClCompile Include="Src\Audio\Audio.cpp" />
     <ClCompile Include="Src\Audio\Sound.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Src\Actor\Actor.h" />
     <ClInclude Include="Src\Actor\ActorManager.h" />
     <ClInclude Include="Src\Actor\ActorPtr.h" />
+    <ClInclude Include="Src\Actor\Enemy.h" />
     <ClInclude Include="Src\Actor\ID.h" />
     <ClInclude Include="Src\Actor\Player.h" />
     <ClInclude Include="Src\Audio\Audio.h" />

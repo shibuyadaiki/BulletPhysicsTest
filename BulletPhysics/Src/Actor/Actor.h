@@ -47,7 +47,9 @@ protected:
 	IWorld& world;
 
 private:
+	CollisionParameter SphereVsSphere(const Actor& other) const;
+
+private:
 	std::map<COL_ID, std::function<CollisionParameter(const Actor&)>> colFunc;
-	CollisionParameter colpara;
 	int cubeCount;
 };

@@ -8,6 +8,11 @@
 #include "SceneParameter.h"
 #include <vector>
 
+#pragma push_macro("new")
+#undef new
+#include <bullet/btBulletDynamicsCommon.h>
+#pragma pop_macro("new")
+
 enum TITLE_SELECT{
 	SELECT_GAMESTART,
 	SELECT_OPTION,
@@ -44,6 +49,15 @@ private:
 	bool mIsEnd;
 	bool gameExit;
 	World wa;
+
+	//btDefaultCollisionConfiguration* pCollConfig = nullptr;
+	//btCollisionDispatcher* pDispatcher = nullptr;
+	//btDbvtBroadphase* pBroadphase = nullptr;
+	//btSequentialImpulseConstraintSolver* pSolver = nullptr;
+	//btDiscreteDynamicsWorld* pDynamicsWorld = nullptr;
+	//
+	//btAlignedObjectArray<btCollisionShape*>	aCollisionShapes;
+	//btClock Clock;
 	/*float ts_scale[TITLE_SELECT_NUM];
 	float ts_nextScale[TITLE_SELECT_NUM], ts_prevScale[TITLE_SELECT_NUM];
 	float ts_alpha[TITLE_SELECT_NUM];

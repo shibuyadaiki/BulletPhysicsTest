@@ -6,7 +6,9 @@ Graphic::Graphic(){
 	line.Load();
 
 	Graphic::GetInstance().LoadMesh(MODEL_ID::SPHERE_MODEL, "Res/Rgr/Shape/ball.rgr");
+	Graphic::GetInstance().LoadMesh(MODEL_ID::CUBE_MODEL, "Res/Rgr/Shape/cube.rgr");
 	Graphic::GetInstance().LoadShader(SHADER_ID::SPHERE_SHADER, "Shader/cso/SphereShader.cso");
+	Graphic::GetInstance().LoadShader(SHADER_ID::CUBE_SHADER, "Shader/cso/CubeShader.cso");
 }
 Graphic::~Graphic(){
 	for (auto& i : animParameter){

@@ -3,16 +3,31 @@
 #include "../Other/Device.h"
 #include "../Graphic/Graphic.h"
 #include "../Actor/Player.h"
+#include "../Actor/Enemy.h"
+
+//#include "stdafx.h"
+
+#define FREEGLUT_STATIC
 
 //コンストラクタ
 TitleScene::TitleScene(std::weak_ptr<SceneParameter> sp_) :
 sp(sp_), gameExit(false)
 {
+	//pCollConfig = new btDefaultCollisionConfiguration;
+	//pDispatcher = new	btCollisionDispatcher(pCollConfig);
+	//pBroadphase = new btDbvtBroadphase;
+	//pSolver = new btSequentialImpulseConstraintSolver;
+	//pDynamicsWorld = new btDiscreteDynamicsWorld(pDispatcher, pBroadphase, pSolver, pCollConfig);
 }
 
 //デストラクタ
 TitleScene::~TitleScene()
 {
+	if (pDynamicsWorld)delete pDynamicsWorld;
+	if (pSolver)delete pSolver;
+	if (pBroadphase)delete pBroadphase;
+	if (pDispatcher)delete pDispatcher;
+	if (pCollConfig)delete pCollConfig;
 }
 
 //開始
@@ -26,12 +41,13 @@ void TitleScene::Initialize()
 	Graphic::GetInstance().LoadShader(SHADER_ID::PLAYER_SHADER, "Shader/cso/fbxModelShader.cso");
 	Graphic::GetInstance().LoadAnimation(ANIM_ID::NEPHILA_WALKFRONT_ANIM, "Res/RgrA/kumo/kumoFront.rgra");
 	wa.Add(ACTOR_ID::PLAYER_ACTOR, std::make_shared<Player>(wa));
+	wa.Add(ACTOR_ID::ENEMY_ACTOR, std::make_shared<Enemy>(wa));
 }
 
 void TitleScene::Update(float frameTime)
 {
 	Device::GetInstance().GetCamera(CAMERA_ID::NORMAL_CAMERA)->SetCamera(
-		vector3(0, 0, 5.0f),
+		vector3(0, 0, -5.0f),
 		vector3(0, 0, 0));
 
 	wa.Update(frameTime);
