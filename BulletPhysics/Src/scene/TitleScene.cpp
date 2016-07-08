@@ -27,6 +27,31 @@ sp(sp_), gameExit(false)
 //デストラクタ
 TitleScene::~TitleScene()
 {
+	int i;
+	for (i = pDynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = pDynamicsWorld->getCollisionObjectArray()[i];
+		btRigidBody* body = btRigidBody::upcast(obj);
+		if (body && body->getMotionState())
+		{
+			delete body->getMotionState();
+		}
+		pDynamicsWorld->removeCollisionObject(obj);
+		delete obj;
+	}
+
+	for (int j = 0; j<aCollisionShapes.size(); j++)
+	{
+		btCollisionShape* shape = aCollisionShapes[j];
+		delete shape;
+	}
+
+	aCollisionShapes.clear();
+	if (pDynamicsWorld)delete pDynamicsWorld;
+	if (pSolver)delete pSolver;
+	if (pBroadphase)delete pBroadphase;
+	if (pDispatcher)delete pDispatcher;
+	if (pCollConfig)delete pCollConfig;
 }
 
 //開始
@@ -36,9 +61,7 @@ void TitleScene::Initialize()
 	gameExit = false;
 	mIsEnd = false;
 	wa.Initialize();
-	Graphic::GetInstance().LoadMesh(MODEL_ID::TARENTULE_MODEL, "Res/Rgr/kumo/kumo.rgr");
 	Graphic::GetInstance().LoadShader(SHADER_ID::PLAYER_SHADER, "Shader/cso/fbxModelShader.cso");
-	Graphic::GetInstance().LoadAnimation(ANIM_ID::NEPHILA_WALKFRONT_ANIM, "Res/RgrA/kumo/kumoFront.rgra");
 	wa.Add(ACTOR_ID::PLAYER_ACTOR, std::make_shared<Player>(wa));
 	wa.Add(ACTOR_ID::ENEMY_ACTOR, std::make_shared<Enemy>(wa));
 	wa.Add(ACTOR_ID::STAGE_ACTOR, std::make_shared<Stage>(wa));

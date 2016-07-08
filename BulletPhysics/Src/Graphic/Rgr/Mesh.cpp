@@ -113,7 +113,8 @@ void Mesh::Draw(D3DXMATRIX* matWorld, bool animFlag, Shader* shader, CAMERA_ID c
 	UINT stride = sizeof(VERTEX);
 	UINT offset = 0;
 	Device::GetInstance().Getd3d11User()->SetAlphaBlend(false,alphaFlag);
-	Device::GetInstance().Getd3d11User()->SetTopology(D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+//	Device::GetInstance().Getd3d11User()->SetTopology(D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	Device::GetInstance().Getd3d11User()->SetTopology(D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	for (int i = 0; i < meshCount + 1; i++){
 
