@@ -4,8 +4,9 @@
 #include "../Graphic/Graphic.h"
 #include "../Actor/Player.h"
 #include "../Actor/Enemy.h"
+#include "../Actor/Stage.h"
 
-//#include "stdafx.h"
+#include "../stdafx.h"
 
 #define FREEGLUT_STATIC
 
@@ -13,21 +14,19 @@
 TitleScene::TitleScene(std::weak_ptr<SceneParameter> sp_) :
 sp(sp_), gameExit(false)
 {
-	//pCollConfig = new btDefaultCollisionConfiguration;
-	//pDispatcher = new	btCollisionDispatcher(pCollConfig);
-	//pBroadphase = new btDbvtBroadphase;
-	//pSolver = new btSequentialImpulseConstraintSolver;
-	//pDynamicsWorld = new btDiscreteDynamicsWorld(pDispatcher, pBroadphase, pSolver, pCollConfig);
+	pCollConfig = new btDefaultCollisionConfiguration;
+	pDispatcher = new	btCollisionDispatcher(pCollConfig);
+	pBroadphase = new btDbvtBroadphase;
+	pSolver = new btSequentialImpulseConstraintSolver;
+	pDynamicsWorld = new btDiscreteDynamicsWorld(pDispatcher, pBroadphase, pSolver, pCollConfig);
+	
+	pDynamicsWorld->setDebugDrawer(nullptr);
+	pDynamicsWorld->setGravity(btVector3(0, -10, 0));
 }
 
 //デストラクタ
 TitleScene::~TitleScene()
 {
-	if (pDynamicsWorld)delete pDynamicsWorld;
-	if (pSolver)delete pSolver;
-	if (pBroadphase)delete pBroadphase;
-	if (pDispatcher)delete pDispatcher;
-	if (pCollConfig)delete pCollConfig;
 }
 
 //開始
@@ -42,12 +41,13 @@ void TitleScene::Initialize()
 	Graphic::GetInstance().LoadAnimation(ANIM_ID::NEPHILA_WALKFRONT_ANIM, "Res/RgrA/kumo/kumoFront.rgra");
 	wa.Add(ACTOR_ID::PLAYER_ACTOR, std::make_shared<Player>(wa));
 	wa.Add(ACTOR_ID::ENEMY_ACTOR, std::make_shared<Enemy>(wa));
+	wa.Add(ACTOR_ID::STAGE_ACTOR, std::make_shared<Stage>(wa));
 }
 
 void TitleScene::Update(float frameTime)
 {
 	Device::GetInstance().GetCamera(CAMERA_ID::NORMAL_CAMERA)->SetCamera(
-		vector3(0, 0, -5.0f),
+		vector3(0, 2.0f, -5.0f),
 		vector3(0, 0, 0));
 
 	wa.Update(frameTime);

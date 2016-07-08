@@ -8,10 +8,8 @@
 #include "SceneParameter.h"
 #include <vector>
 
-#pragma push_macro("new")
-#undef new
-#include <bullet/btBulletDynamicsCommon.h>
-#pragma pop_macro("new")
+#define BT_NO_SIMD_OPERATOR_OVERLOADS //演算子のオーバーロードがdirectxmathと競合するので
+#include "bullet/btBulletDynamicsCommon.h"
 
 enum TITLE_SELECT{
 	SELECT_GAMESTART,
@@ -45,19 +43,19 @@ public:
 private:
 	std::weak_ptr<SceneParameter> sp; 
 
+	btDefaultCollisionConfiguration* pCollConfig = nullptr;
+	btCollisionDispatcher* pDispatcher = nullptr;
+	btDbvtBroadphase* pBroadphase = nullptr;
+	btSequentialImpulseConstraintSolver* pSolver = nullptr;
+	btDiscreteDynamicsWorld* pDynamicsWorld = nullptr;
+	
+	btAlignedObjectArray<btCollisionShape*>	aCollisionShapes;
+	btClock Clock;
+
 private:
 	bool mIsEnd;
 	bool gameExit;
 	World wa;
-
-	//btDefaultCollisionConfiguration* pCollConfig = nullptr;
-	//btCollisionDispatcher* pDispatcher = nullptr;
-	//btDbvtBroadphase* pBroadphase = nullptr;
-	//btSequentialImpulseConstraintSolver* pSolver = nullptr;
-	//btDiscreteDynamicsWorld* pDynamicsWorld = nullptr;
-	//
-	//btAlignedObjectArray<btCollisionShape*>	aCollisionShapes;
-	//btClock Clock;
 	/*float ts_scale[TITLE_SELECT_NUM];
 	float ts_nextScale[TITLE_SELECT_NUM], ts_prevScale[TITLE_SELECT_NUM];
 	float ts_alpha[TITLE_SELECT_NUM];

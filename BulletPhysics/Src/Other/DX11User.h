@@ -39,11 +39,11 @@
 #include <mmsystem.h> // timeGetTime を使いたい
 #include <d3dx11effect.h>                 // エフェクトのインクルードファイル
 
-#if _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#endif
+//#if _DEBUG
+//#define _CRTDBG_MAP_ALLOC
+//#include <crtdbg.h>
+//#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+//#endif
 
 // メモリ開放
 #define SAFE_RELEASE(x) if( x != NULL ){ x->Release(); x = NULL; }

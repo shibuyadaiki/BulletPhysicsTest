@@ -80,7 +80,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	LPTSTR    /*lpCmpLine*/,
 	INT       /*nCmdShow*/)
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	HRESULT hr = E_FAIL;
 	MSG msg;
 	::ZeroMemory(&msg, sizeof(MSG));
