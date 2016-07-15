@@ -6,6 +6,7 @@
 #include "../Actor/Actor.h"
 #include "../Math/Vector2.h"
 #include "SceneParameter.h"
+#include "../Bullet/BulletDraw.h"
 #include <vector>
 
 #define BT_NO_SIMD_OPERATOR_OVERLOADS //演算子のオーバーロードがdirectxmathと競合するので
@@ -56,6 +57,8 @@ private:
 	bool mIsEnd;
 	bool gameExit;
 	World wa;
+	DxDebugDraw bulletDraw;
+
 	/*float ts_scale[TITLE_SELECT_NUM];
 	float ts_nextScale[TITLE_SELECT_NUM], ts_prevScale[TITLE_SELECT_NUM];
 	float ts_alpha[TITLE_SELECT_NUM];

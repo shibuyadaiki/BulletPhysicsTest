@@ -20,6 +20,7 @@ struct VS_OUT
 	float4 pos   : SV_POSITION;
 	float3 normal : NORMAL;
 	float2 texel : TEXCOORD0;
+	float3 color : COLOR;
 };
 
 // 頂点シェーダー
@@ -27,8 +28,8 @@ VS_OUT VS_Main(VS_IN In)
 {
 	VS_OUT Out;
 	Out = (VS_OUT)0;
-	float4 pos = lerp(startPos, endPos, In.pos.y);
-		float3 nor = In.normal;
+	float4 pos = In.pos;
+		Out.color = In.normal;
 
 
 		pos = mul(pos, g_matW);
@@ -40,7 +41,7 @@ VS_OUT VS_Main(VS_IN In)
 // ピクセルシェーダ
 float4 PS_Line(VS_OUT In) : SV_TARGET
 {
-	return materialColor;
+	return float4(In.color.x,In.color.y,In.color.z,0);
 }
 
 // エントリーポイントとバージョンを指定する

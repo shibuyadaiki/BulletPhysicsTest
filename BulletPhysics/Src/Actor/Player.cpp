@@ -11,7 +11,7 @@ scale(vector3(1.0f,1.0f,1.0f)),
 color(vector3(1,0,0)),
 beforePos(vector3(-0.5f,0.0f,0.0f))
 {
-	parameter.radius = 0.3f;
+	parameter.radius = 10.0f;
 	parameter.id = ACTOR_ID::PLAYER_ACTOR;
 	parameter.matrix = 
 		RCMatrix4::scale(scale) *

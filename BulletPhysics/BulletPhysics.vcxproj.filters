@@ -147,6 +147,9 @@
     <ClCompile Include="Src\stdafx.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Bullet\BulletDraw.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Actor\Actor.h">
@@ -311,5 +314,20 @@
     <ClInclude Include="Src\stdafx.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Bullet\BulletDraw.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\hlsl\CrystalShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\CubeShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\fbxModelShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\FontShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\LineShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\PhongShadingShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\SphereShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\StageShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\TextureShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\ThreadEffectShader.hlsl" />
   </ItemGroup>
 </Project>

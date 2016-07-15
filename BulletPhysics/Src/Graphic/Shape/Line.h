@@ -11,7 +11,8 @@ public:
 	~Line();
 	void Release();
 	HRESULT Load(); 
-	void Draw(Shader* shader, const Vector3& startPos, const Vector3& endPos, CAMERA_ID cID, D3DXCOLOR& color);
+	void SetLine(const Vector3& startPos, const Vector3& endPos , const Vector3& color = vector3(0,0,0));
+	void Draw(Shader* shader,CAMERA_ID cID);
 private:
 	// 頂点定義
 	struct VERTEX
@@ -26,9 +27,9 @@ private:
 		UINT boneIndex[4];
 		UINT weight[4];
 	};
-	// インデックスバッファ
-	std::vector<ID3D11Buffer*> g_pIndexBufferList, g_pVertexBufferList;
 
 	std::vector<int> indexSize;
 	LoadTexture lt;
+	std::vector<Vector3> lineList;
+	std::vector<Vector3> colorList;
 };

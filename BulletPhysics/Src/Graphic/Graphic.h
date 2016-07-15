@@ -77,6 +77,7 @@ public:
 	void SetShader(SHADER_ID id);
 	void SetTechniquePass(SHADER_ID id, LPCSTR techniqueName, LPCSTR passName);
 
+	void DrawLineAll();
 	void DrawLine(const Vector3& startPos, const Vector3& endPos, CAMERA_ID cID, const Vector3 color = vector3(1, 1, 1), const float alpha = 1);
 	void DrawSphere(const Vector3 pos, const float radius, CAMERA_ID cID, const Vector3 color = vector3(1, 1, 1), const float alpha = 1);
 	void DrawCube(const Vector3 startPos, const Vector3 endPos, CAMERA_ID cID, const Vector3 color = vector3(1, 1, 1), const float alpha = 1);

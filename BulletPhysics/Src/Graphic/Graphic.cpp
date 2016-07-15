@@ -3,12 +3,13 @@
 #include<string>
 Graphic::Graphic(){
 	animBind = false;
-	line.Load();
+	//line.Load();
 
 	Graphic::GetInstance().LoadMesh(MODEL_ID::SPHERE_MODEL, "Res/Rgr/Shape/ball.rgr");
 	Graphic::GetInstance().LoadMesh(MODEL_ID::CUBE_MODEL, "Res/Rgr/Shape/cube.rgr");
 	Graphic::GetInstance().LoadShader(SHADER_ID::SPHERE_SHADER, "Shader/cso/SphereShader.cso");
 	Graphic::GetInstance().LoadShader(SHADER_ID::CUBE_SHADER, "Shader/cso/CubeShader.cso");
+	Graphic::GetInstance().LoadShader(SHADER_ID::LINE_SHADER, "Shader/cso/lineShader.cso");
 }
 Graphic::~Graphic(){
 	for (auto& i : animParameter){
@@ -232,10 +233,15 @@ void Graphic::SetTechniquePass(SHADER_ID id, LPCSTR techniqueName, LPCSTR passNa
 	shader[id].SetTechniquePass(techniqueName, passName);
 }
 
-void Graphic::DrawLine(const Vector3& startPos, const Vector3& endPos, CAMERA_ID cID, const Vector3 color, const float alpha){
+void Graphic::DrawLineAll()
+{
 	Graphic::GetInstance().SetShader(SHADER_ID::LINE_SHADER);
-	line.Draw(&shader[sID], startPos, endPos, cID, D3DXCOLOR(color.x, color.y, color.z, alpha));
+	line.Draw(&shader[sID], CAMERA_ID::NORMAL_CAMERA);
 	animBind = false;
+}
+
+void Graphic::DrawLine(const Vector3& startPos, const Vector3& endPos, CAMERA_ID cID, const Vector3 color, const float alpha){
+	line.SetLine(startPos, endPos,color);
 }
 
 void Graphic::DrawSphere(const Vector3 pos, const float radius, CAMERA_ID cID, const Vector3 color, const float alpha){
