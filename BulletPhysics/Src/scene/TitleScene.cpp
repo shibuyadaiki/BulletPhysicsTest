@@ -10,9 +10,9 @@
 
 #define FREEGLUT_STATIC
 
-#define ARRAY_SIZE_X 5
-#define ARRAY_SIZE_Y 8
-#define ARRAY_SIZE_Z 2
+#define ARRAY_SIZE_X 1
+#define ARRAY_SIZE_Y 256
+#define ARRAY_SIZE_Z 1
 
 #define MAX_PROXIES (ARRAY_SIZE_X*ARRAY_SIZE_Y*ARRAY_SIZE_Z + 1024)
 
@@ -23,14 +23,14 @@
 
 //コンストラクタ
 TitleScene::TitleScene(std::weak_ptr<SceneParameter> sp_) :
-sp(sp_), gameExit(false)
+	sp(sp_), gameExit(false)
 {
 	pCollConfig = new btDefaultCollisionConfiguration;
 	pDispatcher = new	btCollisionDispatcher(pCollConfig);
 	pBroadphase = new btDbvtBroadphase;
 	pSolver = new btSequentialImpulseConstraintSolver;
 	pDynamicsWorld = new btDiscreteDynamicsWorld(pDispatcher, pBroadphase, pSolver, pCollConfig);
-	
+
 	pDynamicsWorld->setDebugDrawer(nullptr);
 	pDynamicsWorld->setGravity(btVector3(0, -10, 0));
 }
@@ -51,7 +51,7 @@ TitleScene::~TitleScene()
 		delete obj;
 	}
 
-	for (int j = 0; j<aCollisionShapes.size(); j++)
+	for (int j = 0; j < aCollisionShapes.size(); j++)
 	{
 		btCollisionShape* shape = aCollisionShapes[j];
 		delete shape;
@@ -73,11 +73,11 @@ void TitleScene::Initialize()
 	mIsEnd = false;
 	wa.Initialize();
 	Graphic::GetInstance().LoadShader(SHADER_ID::PLAYER_SHADER, "Shader/cso/fbxModelShader.cso");
-//	wa.Add(ACTOR_ID::PLAYER_ACTOR, std::make_shared<Player>(wa));
-//	wa.Add(ACTOR_ID::ENEMY_ACTOR, std::make_shared<Enemy>(wa));
-//	wa.Add(ACTOR_ID::STAGE_ACTOR, std::make_shared<Stage>(wa));
+	//	wa.Add(ACTOR_ID::PLAYER_ACTOR, std::make_shared<Player>(wa));
+	//	wa.Add(ACTOR_ID::ENEMY_ACTOR, std::make_shared<Enemy>(wa));
+	//	wa.Add(ACTOR_ID::STAGE_ACTOR, std::make_shared<Stage>(wa));
 
-// 地面作成、ワールドに追加
+	// 地面作成、ワールドに追加
 	{
 		// コリジョン形状　箱
 		btBoxShape* ground_shape = new btBoxShape(btVector3(btScalar(80.0f), btScalar(80.0f), btScalar(80.0f)));
@@ -136,7 +136,7 @@ void TitleScene::Initialize()
 						btScalar(2.0*i + start_x),
 						btScalar(20 + 2.0*k + start_y),
 						btScalar(2.0*j + start_z)));
-
+		
 					btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 					btRigidBody* body = nullptr;
 					switch ((k + i + j) % 3) {
@@ -157,6 +157,16 @@ void TitleScene::Initialize()
 				}
 			}
 		}
+		//startTransform.setOrigin(SCALING*btVector3(
+		//	btScalar(0),
+		//	btScalar(20),
+		//	btScalar(0)));
+		//
+		//btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		//btRigidBody* body = nullptr;
+		//body = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
+		//	mass, myMotionState, colSphere, localInertiaSphere));
+		//pDynamicsWorld->addRigidBody(body);
 	}
 }
 
@@ -168,12 +178,13 @@ void TitleScene::Update(float frameTime)
 		vector3(0, 0, 0));
 
 	wa.Update(frameTime);
-	if(Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_ESC, true))gameExit = true;
+	if (Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_ESC, true))gameExit = true;
 
 	Graphic::GetInstance().SetFrameTime(frameTime);
 
 	pDynamicsWorld->setDebugDrawer(&bulletDraw);
 	pDynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	fps = 1.0f / frameTime;
 }
 
 //描画
@@ -182,6 +193,7 @@ void TitleScene::Draw() const
 	wa.Draw(CAMERA_ID::NORMAL_CAMERA);
 	pDynamicsWorld->debugDrawWorld();
 	Graphic::GetInstance().DrawLineAll();
+	Graphic::GetInstance().DrawFontDirect(FONT_ID::TEST_FONT, vector2(0.0f, 1080 - 30.0f), vector2(0.20f, 0.25f), 0.45f, "FPS:" + std::to_string((int)fps),vector3(1,1,1));
 }
 
 //終了しているか？
@@ -196,10 +208,10 @@ Scene TitleScene::Next() const
 	return Scene::GamePlay;
 }
 
-void TitleScene::End(){
+void TitleScene::End() {
 	wa.Clear();
 }
 
-bool TitleScene::GameExit(){
+bool TitleScene::GameExit() {
 	return gameExit;
 }

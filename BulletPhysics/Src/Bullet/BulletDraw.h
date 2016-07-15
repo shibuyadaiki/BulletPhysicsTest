@@ -4,8 +4,7 @@
 class DxDebugDraw : public btIDebugDraw {
 private:
 	int m_debugMode;
-	//ç¿ïWïœä∑  
-	inline Vector3 btChange(const btVector3 &inv) { return vector3(inv.getX(), inv.getY(), inv.getZ()); }
+
 public:
 	DxDebugDraw();
 	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& fromColor, const btVector3& toColor);

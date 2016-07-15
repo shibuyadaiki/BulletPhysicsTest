@@ -74,7 +74,7 @@ void Animation::PopAnim(Matrix4* animMat, AnimUser* animUser, float animCount, b
 			animCountAdd1_ = size;
 		}
 	}
-	for (int fdf = 0; fdf < (*animUser->ReturnMat()).size(); fdf++){
+	for (int fdf = 0; fdf < (int)(*animUser->ReturnMat()).size(); fdf++){
 		animMat[fdf] = AnimBlend(RConvert(&(*animUser->ReturnMat())[fdf][animCount_]),
 			RConvert(&(*animUser->ReturnMat())[fdf][animCountAdd1_]), abs(animCount) - (int)abs(animCount));
 	}
@@ -90,7 +90,7 @@ void Animation::AnimBlend(Matrix4* animMat, ANIM_ID id, float animCount, ANIM_ID
 	if (otherID != ANIM_ID::NULL_ANIM){
 		Matrix4 mm[BONEMAXCOUNT];
 		PopAnim(mm,&au[otherID], otherAnimCount, roop);
-		for (int fdf = 0; fdf < (*au[id].ReturnMat()).size(); fdf++){
+		for (int fdf = 0; fdf < (int)(*au[id].ReturnMat()).size(); fdf++){
 			animMat[fdf] = RCMatrix4::lerp(
 				m[fdf],
 				mm[fdf],
@@ -98,14 +98,14 @@ void Animation::AnimBlend(Matrix4* animMat, ANIM_ID id, float animCount, ANIM_ID
 		}
 	}
 	else{
-		for (int fdf = 0; fdf < (*au[id].ReturnMat()).size(); fdf++){
+		for (int fdf = 0; fdf < (int)(*au[id].ReturnMat()).size(); fdf++){
 			animMat[fdf] = m[fdf];
 		}
 	}
 }
 
 void Animation::AnimBlend(Matrix4* mat, Matrix4* otherMat,float blendLevel,ANIM_ID id){
-	for (int fdf = 0; fdf < (*au[id].ReturnMat()).size(); fdf++){
+	for (int fdf = 0; fdf < (int)(*au[id].ReturnMat()).size(); fdf++){
 		mat[fdf] = RCMatrix4::lerp(
 			mat[fdf],
 			otherMat[fdf],

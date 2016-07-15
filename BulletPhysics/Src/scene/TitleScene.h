@@ -53,6 +53,8 @@ private:
 	btAlignedObjectArray<btCollisionShape*>	aCollisionShapes;
 	btClock Clock;
 
+	float fps;
+
 private:
 	bool mIsEnd;
 	bool gameExit;

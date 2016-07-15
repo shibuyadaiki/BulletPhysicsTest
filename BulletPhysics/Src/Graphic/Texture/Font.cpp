@@ -218,7 +218,7 @@ void Font::Draw(Vector2 pos, Vector2 size, float range, Shader* shader, std::str
 	if (center){
 		Vector3 startPos = truePos;
 		Vector3 endPos = truePos;
-		for (int i = 0; i < s.size(); i++){
+		for (int i = 0; i < (int)s.size(); i++){
 			endPos = endPos + vector3(trueSize.x * range, 0, 0);
 		}
 		endPos = endPos + vector3(trueSize.x * range,0, 0);
@@ -228,7 +228,7 @@ void Font::Draw(Vector2 pos, Vector2 size, float range, Shader* shader, std::str
 		truePos = truePos - centerPos;
 	}
 
-	for (int i = 0; i < s.size(); i++){
+	for (int i = 0; i < (int)s.size(); i++){
 		shader->SetVector4("g_Pos", &D3DXVECTOR4(truePos.x, truePos.y, 0, 1));
 		shader->SetVector4("g_Size", &D3DXVECTOR4(trueSize.x, trueSize.y, 0, 1));
 		D3DXVECTOR2 select = fontVec[s[i]];

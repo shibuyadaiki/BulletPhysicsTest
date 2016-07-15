@@ -32,8 +32,8 @@ HRESULT Texture::Load(const char* modelName){
 	ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(res);
 	D3D11_TEXTURE2D_DESC dec;
 	tex->GetDesc(&dec);
-	w = dec.Width;
-	h = dec.Height;
+	w = (float)dec.Width;
+	h = (float)dec.Height;
 	res->Release();
 
 	std::vector<VERTEX> vertexVec;
