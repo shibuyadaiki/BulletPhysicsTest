@@ -8,14 +8,16 @@
 #include "../Shader/LoadTexture.h"
 
 
-class Mesh{
+class Mesh {
 public:
 	Mesh();
 	~Mesh();
 	void Release();
-	HRESULT Load( const char* modelName);
+	HRESULT Load(const char* modelName);
 	void Draw(D3DXMATRIX* matWorld, bool animFlag, Shader* shader, CAMERA_ID cID, D3DXCOLOR* color = NULL, bool alphaFlag = false);
 	MeshUser* ReturnMeshUser();
+	std::vector<Vector3> ReturnBulletVertex(Matrix4& matWorld, CAMERA_ID cID);
+	std::vector<int> ReturnBulletIndex();
 private:
 	// ’¸“_’è‹`
 	struct VERTEX
@@ -45,4 +47,6 @@ private:
 	AnimUser ani;
 	LoadTexture lt;
 	RgrLoader rL;
+	std::vector<Vector3> bulletVertex;
+	std::vector<int> bulletIndex;
 };

@@ -32,4 +32,6 @@ private:
 	LoadTexture lt;
 	std::vector<Vector3> lineList;
 	std::vector<Vector3> colorList;
+	std::vector<VERTEX> vertexVec;
+	std::vector<int> index;
 };

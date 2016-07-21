@@ -4,6 +4,7 @@
 #include <fstream>
 #include "RgrLoader.h"
 #include "../../Math/MathUtility.h"
+#include "../../Math/Converter.h"
 
 using namespace std;
 
@@ -37,6 +38,10 @@ HRESULT Mesh::Load( const char* modelName){
 			//for (int indexSizeFor = indexSize[meshCountFor] - 1; indexSizeFor >= 0; indexSizeFor--){
 			index[indexSizeFor] = indexSizeFor;
 			int idx = (*m.ReturnIndex())[meshCountFor][indexSizeFor];
+			
+			bulletVertex.push_back(RConvert(&(*m.ReturnVertex())[meshCountFor][idx]));
+			bulletIndex.push_back(indexSizeFor);
+
 			vertexVec.push_back({ (*m.ReturnVertex())[meshCountFor][idx],
 				(*m.ReturnNormal())[meshCountFor][(*m.ReturnNormal())[meshCountFor].size() == (*m.ReturnVertex())[meshCountFor].size() ? idx : indexSizeFor],
 				(*m.ReturnUV())[meshCountFor][indexSizeFor],
@@ -113,8 +118,8 @@ void Mesh::Draw(D3DXMATRIX* matWorld, bool animFlag, Shader* shader, CAMERA_ID c
 	UINT stride = sizeof(VERTEX);
 	UINT offset = 0;
 	Device::GetInstance().Getd3d11User()->SetAlphaBlend(false,alphaFlag);
-//	Device::GetInstance().Getd3d11User()->SetTopology(D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	Device::GetInstance().Getd3d11User()->SetTopology(D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
+	Device::GetInstance().Getd3d11User()->SetTopology(D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//Device::GetInstance().Getd3d11User()->SetTopology(D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	for (int i = 0; i < meshCount + 1; i++){
 
@@ -147,4 +152,21 @@ void Mesh::Draw(D3DXMATRIX* matWorld, bool animFlag, Shader* shader, CAMERA_ID c
 
 MeshUser* Mesh::ReturnMeshUser(){
 	return &m;
+}
+
+std::vector<Vector3> Mesh::ReturnBulletVertex(Matrix4& matWorld,CAMERA_ID cID)
+{
+	std::vector<Vector3> vV;
+	for (auto i : bulletVertex) {
+		Vector3 v = i;
+		v = v * matWorld;
+		vV.push_back(v);
+	}
+
+	return vV;
+}
+
+std::vector<int> Mesh::ReturnBulletIndex()
+{
+	return bulletIndex;
 }

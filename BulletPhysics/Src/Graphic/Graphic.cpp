@@ -78,6 +78,14 @@ void Graphic::DrawMesh(MODEL_ID id, const Vector3& position, const Vector3& scal
 MeshUser* Graphic::ReturnMeshUser(MODEL_ID id){
 	return mesh[id].ReturnMeshUser();
 }
+std::vector<Vector3> Graphic::ReturnBulletVertex(MODEL_ID id, Matrix4 & matWorld, CAMERA_ID cID)
+{
+	return mesh[id].ReturnBulletVertex(matWorld,cID);
+}
+std::vector<int> Graphic::ReturnBulletIndex(MODEL_ID id)
+{
+	return mesh[id].ReturnBulletIndex();
+}
 void Graphic::LoadFont(FONT_ID id, const char* modelName){
 	for (auto i : font){
 		if (i.first == id)return;

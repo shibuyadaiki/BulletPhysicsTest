@@ -55,6 +55,8 @@ public:
 	void DrawMesh(MODEL_ID id, const Matrix4* mat, CAMERA_ID cID, D3DXCOLOR* color = NULL, bool alphaFlag = false);
 	void DrawMesh(MODEL_ID id,const Vector3& position, const Vector3& scale, const Vector3& rotate, CAMERA_ID cID, D3DXCOLOR* color = NULL, bool alphaFlag = false);
 	MeshUser* ReturnMeshUser(MODEL_ID id);
+	std::vector<Vector3> ReturnBulletVertex(MODEL_ID id, Matrix4& matWorld, CAMERA_ID cID);
+	std::vector<int> ReturnBulletIndex(MODEL_ID id);
 
 	void LoadFont(FONT_ID id, const char* modelName);
 	//std::to_String‚Å”’l‚ğ•¶š—ñ‚É•ÏŠ·‚Å‚«‚Ü‚·

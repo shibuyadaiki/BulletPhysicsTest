@@ -32,8 +32,9 @@ void Line::Draw(Shader* shader, CAMERA_ID cID){
 		std::vector<char> fileNameVec;
 		char slash = '\\';
 
-		std::vector<VERTEX> vertexVec;
-
+		vertexVec.clear();
+		index.clear();
+		
 		int count = 0;
 		for (auto i : lineList) {
 			vertexVec.push_back({
@@ -50,30 +51,23 @@ void Line::Draw(Shader* shader, CAMERA_ID cID){
 
 		int vertexSize = vertexVec.size();
 		// 頂点の実データを設定
-		VERTEX* v = new VERTEX[vertexSize];
-		for (int i = 0; i < vertexSize; i++)
-			v[i] = vertexVec[i];
 
 		// 頂点バッファ
 		ID3D11Buffer* VertexBuffer = NULL;
 
 		// 頂点バッファを作成する
-		Device::GetInstance().Getd3d11User()->CreateVertexBuffer(&VertexBuffer, v, sizeof(VERTEX)* vertexSize, 0);
+		Device::GetInstance().Getd3d11User()->CreateVertexBuffer(&VertexBuffer, vertexVec.data(), sizeof(VERTEX)* vertexSize, 0);
 
-		delete(v);
-
-		UINT* index = new UINT[vertexSize];
 
 		for (int i = 0; i < vertexSize; i++)
-			index[i] = i;
+			index.push_back(i);
 
 		// インデックスバッファ
 		ID3D11Buffer* IndexBuffer = NULL;
 
 		// インデックスバッファを作成する。
-		hr = Device::GetInstance().Getd3d11User()->CreateIndexBuffer(&IndexBuffer, index, sizeof(UINT) * vertexSize, 0);
+		hr = Device::GetInstance().Getd3d11User()->CreateIndexBuffer(&IndexBuffer, index.data(), sizeof(UINT) * vertexSize, 0);
 
-		delete(index);
 
 		Matrix4 ide = RCMatrix4::Identity();
 		D3DXMATRIX matWorld = RConvert(&ide);
