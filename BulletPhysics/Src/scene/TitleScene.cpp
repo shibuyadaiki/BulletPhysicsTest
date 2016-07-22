@@ -23,7 +23,7 @@
 
 //コンストラクタ
 TitleScene::TitleScene(std::weak_ptr<SceneParameter> sp_) :
-	sp(sp_), gameExit(false),triangleIndices(NULL),triangleVertices(NULL), pMeshData(NULL), pColShape(NULL)
+	sp(sp_), gameExit(false),triangleIndices(NULL),triangleVertices(NULL), pMeshData(NULL)
 {
 	pCollConfig = new btDefaultCollisionConfiguration;
 	pDispatcher = new	btCollisionDispatcher(pCollConfig);
@@ -39,7 +39,6 @@ TitleScene::TitleScene(std::weak_ptr<SceneParameter> sp_) :
 //デストラクタ
 TitleScene::~TitleScene()
 {
-	SAFE_DELETE_ARRAY(pColShape);
 	SAFE_DELETE_ARRAY(triangleIndices);
 	SAFE_DELETE_ARRAY(triangleVertices);
 	SAFE_DELETE_ARRAY(pMeshData);
@@ -75,7 +74,7 @@ void TitleScene::Initialize()
 {
 	mat = RCMatrix4::Identity();
 	mat = RCMatrix4::scale(vector3(1, 1, 1)) *
-		RCMatrix4::translate(vector3(0, 0, 0));
+		RCMatrix4::translate(vector3(0, -30, 10));
 
 	Device::GetInstance().CameraInit(CAMERA_ID::NORMAL_CAMERA);
 	gameExit = false;
@@ -119,109 +118,122 @@ void TitleScene::Initialize()
 			triangleVertices[i] = btVector3(bV[i].x, bV[i].y, bV[i].z);
 		}
 
-		const int   numTriangles = bI.size() - 3;
+		const int   numTriangles = bI.size() / 3;
 		int*    pTriangleIndexBase = triangleIndices;
-		const int   triangleIndexStride = sizeof(int);
-		const int   numVertices = bV.size();
-		btScalar *  pVertexBase = (btScalar*)triangleVertices;
+		const int   triangleIndexStride = sizeof(int) * 3;
+		const int   numVertices = bV.size() / 3;
+		btScalar*  pVertexBase = (btScalar*)triangleVertices;
 		const int   vertexStride = sizeof(btVector3);
+
 		 pMeshData = new btTriangleIndexVertexArray(
 			numTriangles,
-			pTriangleIndexBase,
+			triangleIndices,
 			triangleIndexStride,
 			numVertices,
 			pVertexBase,
 			vertexStride);
 		
-		pColShape = new btBvhTriangleMeshShape(pMeshData, true);
-		
-		btRigidBody* body = nullptr;
-		
-		// 動かないので質量0　慣性0
-		btScalar mass(0.0f);
-		btVector3 inertia(0, 0, 0);
-		btTransform ground_pos;
-		ground_pos.setIdentity();
-		ground_pos.setOrigin(btVector3(0, 0, 0));
-		btDefaultMotionState* motion_state = new btDefaultMotionState(ground_pos);
-		body = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
-			mass, motion_state, pColShape, inertia));
-		
-		pDynamicsWorld->addRigidBody(body);
-
+		 btCollisionShape* pColShape = new btBvhTriangleMeshShape(pMeshData, true);
+		 aCollisionShapes.push_back(pColShape);
+		 btTransform ground_pos;
+		 ground_pos.setIdentity();
+		 ground_pos.setOrigin(btVector3(0, 0, 0));
+		 
+		 // 動かないので質量0　慣性0
+		 btScalar mass(0.0f);
+		 btVector3 inertia(0, 0, 0);
+		 
+		 btDefaultMotionState* motion_state = new btDefaultMotionState(ground_pos);
+		 btRigidBody::btRigidBodyConstructionInfo rb_cinfo(mass, motion_state,pColShape, inertia);
+		 btRigidBody* body = new btRigidBody(rb_cinfo);
+		 pDynamicsWorld->addRigidBody(body);
 	}
 
 	//最初の描画
 	{
-		btBoxShape* colBox = new btBoxShape(btVector3(SCALING * 1, SCALING * 1, SCALING * 1));
-		btCollisionShape* colSphere = new btSphereShape(SCALING*btScalar(1.));
-		btCapsuleShape* colCapsule = new btCapsuleShape(SCALING*1.0f, SCALING*2.0f);
-		aCollisionShapes.push_back(colBox);
-		aCollisionShapes.push_back(colSphere);
-		aCollisionShapes.push_back(colCapsule);
-	
-		/// Create Dynamic Objects
+		//btBoxShape* colBox = new btBoxShape(btVector3(SCALING * 1, SCALING * 1, SCALING * 1));
+		//btCollisionShape* colSphere = new btSphereShape(SCALING*btScalar(1.));
+		//btCapsuleShape* colCapsule = new btCapsuleShape(SCALING*1.0f, SCALING*2.0f);
+		//aCollisionShapes.push_back(colBox);
+		//aCollisionShapes.push_back(colSphere);
+		//aCollisionShapes.push_back(colCapsule);
+		//
+		///// Create Dynamic Objects
+		//btTransform startTransform;
+		//startTransform.setIdentity();
+		//
+		//btScalar	mass(1.f);
+		//
+		////rigidbody is dynamic if and only if mass is non zero, otherwise static
+		//bool isDynamic = (mass != 0.f);
+		//
+		//btVector3 localInertiaBox(0, 0, 0);
+		//btVector3 localInertiaSphere(0, 0, 0);
+		//btVector3 localInertiaCapsule(0, 0, 0);
+		//if (isDynamic) {
+		//	colBox->calculateLocalInertia(mass, localInertiaBox);
+		//	colSphere->calculateLocalInertia(mass, localInertiaSphere);
+		//	colCapsule->calculateLocalInertia(mass, localInertiaCapsule);
+		//}
+		//float start_x = START_POS_X - ARRAY_SIZE_X / 2;
+		//float start_y = START_POS_Y;
+		//float start_z = START_POS_Z - ARRAY_SIZE_Z / 2;
+		//
+		//for (int k = 0; k<ARRAY_SIZE_Y; k++)
+		//{
+		//	for (int i = 0; i<ARRAY_SIZE_X; i++)
+		//	{
+		//		for (int j = 0; j<ARRAY_SIZE_Z; j++)
+		//		{
+		//			startTransform.setOrigin(SCALING*btVector3(
+		//				btScalar(10.0*i + start_x),
+		//				btScalar(20 + 10.0*k + start_y),
+		//				btScalar(10.0*j + start_z)));
+		//
+		//			btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		//			btRigidBody* body = nullptr;
+		//			switch ((k + i + j) % 3) {
+		//			case 0:
+		//				body = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
+		//					mass, myMotionState, colBox, localInertiaBox));
+		//				break;
+		//			case 1:
+		//				body = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
+		//					mass, myMotionState, colSphere, localInertiaSphere));
+		//				break;
+		//			case 2:
+		//				body = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
+		//					mass, myMotionState, colCapsule, localInertiaCapsule));
+		//				break;
+		//			}
+		//			pDynamicsWorld->addRigidBody(body);
+		//		}
+		//	}
+		//}
+
 		btTransform startTransform;
 		startTransform.setIdentity();
-	
-		btScalar	mass(1.f);
-	
-		//rigidbody is dynamic if and only if mass is non zero, otherwise static
-		bool isDynamic = (mass != 0.f);
-	
-		btVector3 localInertiaBox(0, 0, 0);
-		btVector3 localInertiaSphere(0, 0, 0);
-		btVector3 localInertiaCapsule(0, 0, 0);
-		if (isDynamic) {
-			colBox->calculateLocalInertia(mass, localInertiaBox);
-			colSphere->calculateLocalInertia(mass, localInertiaSphere);
-			colCapsule->calculateLocalInertia(mass, localInertiaCapsule);
-		}
-		float start_x = START_POS_X - ARRAY_SIZE_X / 2;
-		float start_y = START_POS_Y;
-		float start_z = START_POS_Z - ARRAY_SIZE_Z / 2;
-	
-		for (int k = 0; k<ARRAY_SIZE_Y; k++)
-		{
-			for (int i = 0; i<ARRAY_SIZE_X; i++)
-			{
-				for (int j = 0; j<ARRAY_SIZE_Z; j++)
-				{
-					startTransform.setOrigin(SCALING*btVector3(
-						btScalar(10.0*i + start_x),
-						btScalar(20 + 10.0*k + start_y),
-						btScalar(10.0*j + start_z)));
 		
-					btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-					btRigidBody* body = nullptr;
-					switch ((k + i + j) % 3) {
-					case 0:
-						body = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
-							mass, myMotionState, colBox, localInertiaBox));
-						break;
-					case 1:
-						body = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
-							mass, myMotionState, colSphere, localInertiaSphere));
-						break;
-					case 2:
-						body = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
-							mass, myMotionState, colCapsule, localInertiaCapsule));
-						break;
-					}
-					pDynamicsWorld->addRigidBody(body);
-				}
-			}
+		btScalar	mass(1.0f);
+		btCollisionShape* colSphere = new btSphereShape(SCALING*btScalar(1.));
+		aCollisionShapes.push_back(colSphere);
+		////rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+		
+		btVector3 localInertiaSphere(0, 0, 0);
+		if (isDynamic) {
+			colSphere->calculateLocalInertia(mass, localInertiaSphere);
 		}
-		//startTransform.setOrigin(SCALING*btVector3(
-		//	btScalar(0),
-		//	btScalar(20),
-		//	btScalar(0)));
-		//
-		//btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-		//btRigidBody* body = nullptr;
-		//body = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
-		//	mass, myMotionState, colSphere, localInertiaSphere));
-		//pDynamicsWorld->addRigidBody(body);
+		startTransform.setOrigin(SCALING*btVector3(
+			btScalar(0),
+			btScalar(20),
+			btScalar(0)));
+		
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		btRigidBody* body = nullptr;
+		body = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
+			mass, myMotionState, colSphere, localInertiaSphere));
+		pDynamicsWorld->addRigidBody(body);
 	}
 }
 

@@ -64,7 +64,6 @@ private:
 	int* triangleIndices;
 	btVector3*    triangleVertices;
 	btStridingMeshInterface* pMeshData;
-	btCollisionShape* pColShape;
 
 	/*float ts_scale[TITLE_SELECT_NUM];
 	float ts_nextScale[TITLE_SELECT_NUM], ts_prevScale[TITLE_SELECT_NUM];

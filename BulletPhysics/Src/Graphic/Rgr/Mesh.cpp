@@ -34,13 +34,17 @@ HRESULT Mesh::Load( const char* modelName){
 		indexSize.push_back((*m.ReturnIndex())[meshCountFor].size());
 		std::vector<int> index(indexSize[meshCountFor]);
 
+		for (int i = 0; i < (*m.ReturnVertex())[meshCountFor].size(); i++) {
+			bulletVertex.push_back(RConvert(&(*m.ReturnVertex())[meshCountFor][i]));
+		}
+
 		for (int indexSizeFor = 0; indexSizeFor < indexSize[meshCountFor]; indexSizeFor++){
 			//for (int indexSizeFor = indexSize[meshCountFor] - 1; indexSizeFor >= 0; indexSizeFor--){
 			index[indexSizeFor] = indexSizeFor;
 			int idx = (*m.ReturnIndex())[meshCountFor][indexSizeFor];
+	
 			
-			bulletVertex.push_back(RConvert(&(*m.ReturnVertex())[meshCountFor][idx]));
-			bulletIndex.push_back(indexSizeFor);
+			bulletIndex.push_back(idx);
 
 			vertexVec.push_back({ (*m.ReturnVertex())[meshCountFor][idx],
 				(*m.ReturnNormal())[meshCountFor][(*m.ReturnNormal())[meshCountFor].size() == (*m.ReturnVertex())[meshCountFor].size() ? idx : indexSizeFor],
