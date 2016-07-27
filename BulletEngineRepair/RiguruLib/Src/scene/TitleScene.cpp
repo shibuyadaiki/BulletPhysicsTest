@@ -22,11 +22,11 @@
 #define START_POS_Y 0
 #define START_POS_Z 0
 
-const float RADIUS =  10.0f;
+const float RADIUS =  3.0f;
 
 //コンストラクタ
 TitleScene::TitleScene(std::weak_ptr<SceneParameter> sp_) :
-	sp(sp_), gameExit(false)
+sp(sp_), gameExit(false), stageAngle(vector3(0,0,0))
 {
 	pCollConfig = new btDefaultCollisionConfiguration;
 	pDispatcher = new	btCollisionDispatcher(pCollConfig);
@@ -37,6 +37,7 @@ TitleScene::TitleScene(std::weak_ptr<SceneParameter> sp_) :
 	pDynamicsWorld->setDebugDrawer(nullptr);
 	pDynamicsWorld->setGravity(btVector3(0, -10, 0));
 	Graphic::GetInstance().LoadMesh(MODEL_ID::STAGE_MODEL, "Res/Rgr/Stage/map01/stageDraw.rgr");
+	Graphic::GetInstance().LoadMesh(MODEL_ID::TARENTULE_MODEL, "Res/Rgr/kumo/kumo.rgr");
 }
 
 //デストラクタ
@@ -72,8 +73,8 @@ TitleScene::~TitleScene()
 //開始
 void TitleScene::Initialize()
 {
-	mat = RCMatrix4::Identity();
-	mat = RCMatrix4::scale(vector3(30, 30, 30)) *
+	stageMat = RCMatrix4::Identity();
+	stageMat = RCMatrix4::scale(vector3(30, 30, 30)) *
 		RCMatrix4::translate(vector3(0, 0, 0));
 
 	Device::GetInstance().CameraInit(CAMERA_ID::NORMAL_CAMERA);
@@ -106,7 +107,7 @@ void TitleScene::Initialize()
 	//}
 
 	{
-		triangleVertices = Graphic::GetInstance().ReturnBulletVertex(MODEL_ID::STAGE_MODEL, mat, CAMERA_ID::NORMAL_CAMERA);
+		triangleVertices = Graphic::GetInstance().ReturnBulletVertex(MODEL_ID::STAGE_MODEL, stageMat, CAMERA_ID::NORMAL_CAMERA);
 		triangleIndices = Graphic::GetInstance().ReturnBulletIndex(MODEL_ID::STAGE_MODEL);
 		
 		for (int i = 0; i < triangleIndices.size(); i++) {
@@ -130,13 +131,17 @@ void TitleScene::Initialize()
 			ground_pos.setOrigin(btVector3(0, 0, 0));
 
 			// 動かないので質量0　慣性0
-			btScalar mass(0.0f);
+			btScalar mass(100000.0f);
 			btVector3 inertia(0, 0, 0);
 
 			btDefaultMotionState* motion_state = new btDefaultMotionState(ground_pos);
 			btRigidBody::btRigidBodyConstructionInfo rb_cinfo(mass, motion_state, pColShape, inertia);
-			btRigidBody* body = new btRigidBody(rb_cinfo);
-			pDynamicsWorld->addRigidBody(body);
+			stage[i] = new btRigidBody(rb_cinfo);
+			
+			stage[i]->setCollisionFlags(stage[i]->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+			stage[i]->setActivationState(DISABLE_DEACTIVATION);
+			
+			pDynamicsWorld->addRigidBody(stage[i]);
 		}
 	}
 
@@ -222,28 +227,53 @@ void TitleScene::Initialize()
 		
 		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 		
-		ball = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
+		player = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
 			mass, myMotionState, colSphere, localInertiaSphere));
-		pDynamicsWorld->addRigidBody(ball);
+		pDynamicsWorld->addRigidBody(player);
 	}
 }
 
 void TitleScene::Update(float frameTime)
 {
 	pDynamicsWorld->stepSimulation(frameTime, 0);
-	Vector3 v =RConvertB(ball->getWorldTransform().getOrigin());
-	Device::GetInstance().GetCamera(CAMERA_ID::NORMAL_CAMERA)->SetCamera(
-		v + vector3(0, 50.0f, -70.0f),
-		v);
-
 	wa.Update(frameTime);
 	if (Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_ESC, true))gameExit = true;
 
 	Graphic::GetInstance().SetFrameTime(frameTime);
 
+	fps = 1.0f / frameTime;
+
+	if (Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_W))stageAngle.z += 10.0f * frameTime;
+	if (Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_S))stageAngle.z -= 10.0f * frameTime;
+
+	stageMat = RCMatrix4::scale(vector3(30, 30, 30)) *
+		RCMatrix4::rotateZ(stageAngle.z) *
+		RCMatrix4::rotateX(stageAngle.x) *
+		RCMatrix4::rotateY(stageAngle.y) *
+		RCMatrix4::translate(vector3(0, 0, 0));
+	Quaternion stageQ = quaternion(stageMat);
+	for (int i = 0; i < stage.size();i++){
+		btTransform bt;
+		stage[i]->getMotionState()->getWorldTransform(bt);
+		bt.setRotation(RConvertB(stageQ));
+		stage[i]->getMotionState()->setWorldTransform(bt);
+	}
+
+	btTransform t;
+	player->getMotionState()->getWorldTransform(t);
+	Vector3 v = RConvertB(t.getOrigin());
+	Device::GetInstance().GetCamera(CAMERA_ID::NORMAL_CAMERA)->SetCamera(
+		v + vector3(0, 50.0f, -70.0f),
+		v);
+	btQuaternion q = t.getRotation();
+	playerMat =
+		RCMatrix4::scale(vector3(1, 1, 1)) *
+		RCQuaternion::rotate(RConvertB(q)) *
+		RCMatrix4::translate(v);
+
+	pDynamicsWorld->updateAabbs();
 	pDynamicsWorld->setDebugDrawer(&bulletDraw);
 	pDynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-	fps = 1.0f / frameTime;
 }
 
 //描画
@@ -251,15 +281,15 @@ void TitleScene::Draw() const
 {
 	wa.Draw(CAMERA_ID::NORMAL_CAMERA);
 	
-	//Graphic::GetInstance().SetShader(SHADER_ID::PLAYER_SHADER);
-	//Graphic::GetInstance().SetTechniquePass(SHADER_ID::PLAYER_SHADER, "TShader", "P1");
-	//Graphic::GetInstance().DrawMesh(MODEL_ID::STAGE_MODEL, &mat, CAMERA_ID::NORMAL_CAMERA);
-	//
-	//Vector3 v = RConvertB(ball->getWorldTransform().getOrigin());
-	//Graphic::GetInstance().DrawSphere(v, RADIUS, CAMERA_ID::NORMAL_CAMERA);
+	Graphic::GetInstance().SetShader(SHADER_ID::PLAYER_SHADER);
+	Graphic::GetInstance().SetTechniquePass(SHADER_ID::PLAYER_SHADER, "TShader", "P1");
+	Graphic::GetInstance().DrawMesh(MODEL_ID::STAGE_MODEL, &stageMat, CAMERA_ID::NORMAL_CAMERA);
+	
+	//Graphic::GetInstance().DrawMesh(MODEL_ID::TARENTULE_MODEL, &playerMat, CAMERA_ID::NORMAL_CAMERA);
+	Graphic::GetInstance().DrawSphere(RCMatrix4::getPosition(playerMat), RADIUS, CAMERA_ID::NORMAL_CAMERA);
 
-	pDynamicsWorld->debugDrawWorld();
-	Graphic::GetInstance().DrawLineAll();
+	//pDynamicsWorld->debugDrawWorld();
+	//Graphic::GetInstance().DrawLineAll();
 	Graphic::GetInstance().DrawFontDirect(FONT_ID::TEST_FONT, vector2(0.0f, 1080 - 30.0f), vector2(0.20f, 0.25f), 0.45f, "FPS:" + std::to_string((int)fps),vector3(1,1,1));
 }
 

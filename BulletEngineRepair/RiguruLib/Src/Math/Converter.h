@@ -29,3 +29,7 @@ Quaternion RConvert(D3DXQUATERNION* q);
 Vector3 RConvertB(const btVector3 &inv);
 //À•W•ÏŠ·(¶èÀ•WŒn‚É•ÏŠ·)
 Vector3 RConvertBR(const btVector3 &inv);
+//Quaternion‚É•ÏŠ·
+Quaternion RConvertB(const btQuaternion& q);
+//D3DXQUATERNION‚É•ÏŠ·
+btQuaternion RConvertB(const Quaternion& q);

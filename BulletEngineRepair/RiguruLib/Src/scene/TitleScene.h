@@ -52,7 +52,8 @@ private:
 	
 	btAlignedObjectArray<btCollisionShape*>	aCollisionShapes;
 	btClock Clock;
-	btRigidBody* ball;
+	btRigidBody* player;
+	std::map<int,btRigidBody*> stage;
 
 	float fps;
 
@@ -60,7 +61,8 @@ private:
 	bool mIsEnd;
 	bool gameExit;
 	World wa;
-	Matrix4 mat;
+	Matrix4 stageMat,playerMat;
+	Vector3 stageAngle;
 	DxDebugDraw bulletDraw;
 	std::map<int,std::shared_ptr<btStridingMeshInterface>> pMeshData;
 

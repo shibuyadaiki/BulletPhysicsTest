@@ -77,3 +77,13 @@ Vector3 RConvertB(const btVector3 &inv) {
 Vector3 RConvertBR(const btVector3 &inv) {
 	return vector3(-inv.getX(), -inv.getY(), inv.getZ());
 }
+
+//Quaternion‚É•ÏŠ·
+Quaternion RConvertB(const btQuaternion& q){
+	return quaternion(q.x(), q.y(), q.z(), q.w());
+}
+
+//D3DXQUATERNION‚É•ÏŠ·
+btQuaternion RConvertB(const Quaternion& q){
+	return btQuaternion(q.x, q.y, q.z, q.w);
+}
