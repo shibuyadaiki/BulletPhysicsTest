@@ -72,7 +72,10 @@ Quaternion RConvert(D3DXQUATERNION* q){
 Vector3 RConvertB(const btVector3 &inv) {
 	return vector3(inv.getX(), inv.getY(), inv.getZ()); 
 }
-
+//À•W•ÏŠ·  
+btVector3 RConvertB(const Vector3 &inv) {
+	return btVector3(inv.x, inv.y, inv.z);
+}
 //À•W•ÏŠ·(¶èÀ•WŒn‚É•ÏŠ·)
 Vector3 RConvertBR(const btVector3 &inv) {
 	return vector3(-inv.getX(), -inv.getY(), inv.getZ());

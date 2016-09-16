@@ -11,6 +11,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\hlsl\CrystalShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\CubeShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\fbxModelShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\FontShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\LineShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\PhongShadingShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\SphereShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\StageShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\TextureShader.hlsl" />
+    <FxCompile Include="Shader\hlsl\ThreadEffectShader.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="Src\Actor\Actor.cpp" />
     <ClCompile Include="Src\Actor\ActorManager.cpp" />
     <ClCompile Include="Src\Actor\Enemy.cpp" />
@@ -113,18 +125,6 @@
     <ClInclude Include="Src\world\IWorld.h" />
     <ClInclude Include="Src\world\World.h" />
     <ClInclude Include="Src\world\WorldActor.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shader\hlsl\CrystalShader.hlsl" />
-    <FxCompile Include="Shader\hlsl\CubeShader.hlsl" />
-    <FxCompile Include="Shader\hlsl\fbxModelShader.hlsl" />
-    <FxCompile Include="Shader\hlsl\FontShader.hlsl" />
-    <FxCompile Include="Shader\hlsl\LineShader.hlsl" />
-    <FxCompile Include="Shader\hlsl\PhongShadingShader.hlsl" />
-    <FxCompile Include="Shader\hlsl\SphereShader.hlsl" />
-    <FxCompile Include="Shader\hlsl\StageShader.hlsl" />
-    <FxCompile Include="Shader\hlsl\TextureShader.hlsl" />
-    <FxCompile Include="Shader\hlsl\ThreadEffectShader.hlsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C421E6E9-0F66-4532-8669-1D4707BE51C6}</ProjectGuid>

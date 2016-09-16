@@ -27,6 +27,8 @@ Quaternion RConvert(D3DXQUATERNION* q);
 
 //座標変換  
 Vector3 RConvertB(const btVector3 &inv);
+//座標変換  
+btVector3 RConvertB(const Vector3 &inv);
 //座標変換(左手座標系に変換)
 Vector3 RConvertBR(const btVector3 &inv);
 //Quaternionに変換

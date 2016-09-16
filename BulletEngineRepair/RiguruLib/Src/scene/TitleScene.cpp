@@ -22,7 +22,10 @@
 #define START_POS_Y 0
 #define START_POS_Z 0
 
-const float RADIUS =  3.0f;
+const float RADIUS =  4.0f;
+const float stageScale = 100.0f;
+const Vector3 STAGESCALE = vector3(stageScale,stageScale,stageScale);
+const float ROTATESPEED = 10.0f;
 
 //コンストラクタ
 TitleScene::TitleScene(std::weak_ptr<SceneParameter> sp_) :
@@ -35,7 +38,7 @@ sp(sp_), gameExit(false), stageAngle(vector3(0,0,0))
 	pDynamicsWorld = new btDiscreteDynamicsWorld(pDispatcher, pBroadphase, pSolver, pCollConfig);
 
 	pDynamicsWorld->setDebugDrawer(nullptr);
-	pDynamicsWorld->setGravity(btVector3(0, -10, 0));
+	pDynamicsWorld->setGravity(btVector3(0, -50, 0));
 	Graphic::GetInstance().LoadMesh(MODEL_ID::STAGE_MODEL, "Res/Rgr/Stage/map01/stageDraw.rgr");
 	Graphic::GetInstance().LoadMesh(MODEL_ID::TARENTULE_MODEL, "Res/Rgr/kumo/kumo.rgr");
 }
@@ -74,7 +77,7 @@ TitleScene::~TitleScene()
 void TitleScene::Initialize()
 {
 	stageMat = RCMatrix4::Identity();
-	stageMat = RCMatrix4::scale(vector3(30, 30, 30)) *
+	stageMat = RCMatrix4::scale(STAGESCALE) *
 		RCMatrix4::translate(vector3(0, 0, 0));
 
 	Device::GetInstance().CameraInit(CAMERA_ID::NORMAL_CAMERA);
@@ -131,7 +134,7 @@ void TitleScene::Initialize()
 			ground_pos.setOrigin(btVector3(0, 0, 0));
 
 			// 動かないので質量0　慣性0
-			btScalar mass(100000.0f);
+			btScalar mass(0.0f);
 			btVector3 inertia(0, 0, 0);
 
 			btDefaultMotionState* motion_state = new btDefaultMotionState(ground_pos);
@@ -243,20 +246,27 @@ void TitleScene::Update(float frameTime)
 
 	fps = 1.0f / frameTime;
 
-	if (Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_W))stageAngle.z += 10.0f * frameTime;
-	if (Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_S))stageAngle.z -= 10.0f * frameTime;
+	if (Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_W))stageAngle.x += 50.0f * frameTime;
+	if (Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_S))stageAngle.x -= 50.0f * frameTime;
+	if (Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_A))stageAngle.z += 50.0f * frameTime;
+	if (Device::GetInstance().GetInput()->KeyDown(INPUTKEY::KEY_D))stageAngle.z -= 50.0f * frameTime;
 
-	stageMat = RCMatrix4::scale(vector3(30, 30, 30)) *
+	stageMat = RCMatrix4::scale(STAGESCALE) *
 		RCMatrix4::rotateZ(stageAngle.z) *
 		RCMatrix4::rotateX(stageAngle.x) *
 		RCMatrix4::rotateY(stageAngle.y) *
 		RCMatrix4::translate(vector3(0, 0, 0));
-	Quaternion stageQ = quaternion(stageMat);
+
+	Quaternion stageQ = quaternion(RCMatrix4::normalize(stageMat));
 	for (int i = 0; i < stage.size();i++){
 		btTransform bt;
+
 		stage[i]->getMotionState()->getWorldTransform(bt);
-		bt.setRotation(RConvertB(stageQ));
-		stage[i]->getMotionState()->setWorldTransform(bt);
+		//stage[i]->getMotionState()->getWorldTransform(bt);
+		bt.setRotation(RConvertB(RCQuaternion::normalize(stageQ)));
+		//stage[i]->getMotionState()->setWorldTransform(bt);
+
+		stage[i]->setCenterOfMassTransform(bt);
 	}
 
 	btTransform t;
@@ -271,6 +281,7 @@ void TitleScene::Update(float frameTime)
 		RCQuaternion::rotate(RConvertB(q)) *
 		RCMatrix4::translate(v);
 
+
 	pDynamicsWorld->updateAabbs();
 	pDynamicsWorld->setDebugDrawer(&bulletDraw);
 	pDynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
@@ -283,13 +294,12 @@ void TitleScene::Draw() const
 	
 	Graphic::GetInstance().SetShader(SHADER_ID::PLAYER_SHADER);
 	Graphic::GetInstance().SetTechniquePass(SHADER_ID::PLAYER_SHADER, "TShader", "P1");
-	Graphic::GetInstance().DrawMesh(MODEL_ID::STAGE_MODEL, &stageMat, CAMERA_ID::NORMAL_CAMERA);
-	
+	//Graphic::GetInstance().DrawMesh(MODEL_ID::STAGE_MODEL, &stageMat, CAMERA_ID::NORMAL_CAMERA);
 	//Graphic::GetInstance().DrawMesh(MODEL_ID::TARENTULE_MODEL, &playerMat, CAMERA_ID::NORMAL_CAMERA);
-	Graphic::GetInstance().DrawSphere(RCMatrix4::getPosition(playerMat), RADIUS, CAMERA_ID::NORMAL_CAMERA);
+	//Graphic::GetInstance().DrawSphere(RCMatrix4::getPosition(playerMat), RADIUS, CAMERA_ID::NORMAL_CAMERA);
 
-	//pDynamicsWorld->debugDrawWorld();
-	//Graphic::GetInstance().DrawLineAll();
+	pDynamicsWorld->debugDrawWorld();
+	Graphic::GetInstance().DrawLineAll();
 	Graphic::GetInstance().DrawFontDirect(FONT_ID::TEST_FONT, vector2(0.0f, 1080 - 30.0f), vector2(0.20f, 0.25f), 0.45f, "FPS:" + std::to_string((int)fps),vector3(1,1,1));
 }
 
